@@ -34,10 +34,7 @@ describe Tracking::Client do
   before do
     @client = Tracking::Client.new('redis://localhost:6379/')
 
-    #cleanup keys from old tests
-    redis = @client.instance_variable_get('@minuteman').redis
-    old_minuteman_keys = redis.keys('minuteman_*')
-    redis.del old_minuteman_keys
+    Tracking::Client::TestHelpers.delete_all_tracked_events!(@client)
 
     @entity1 = UUID.new.generate
     @entity2 = UUID.new.generate
