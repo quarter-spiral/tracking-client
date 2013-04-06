@@ -1,4 +1,4 @@
-# 0.0.6 / Unreleased
+# 0.0.6 / 2013-04-06
 
 * Adds game specific tracking and insights
 
