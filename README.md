@@ -52,6 +52,17 @@ client.query_impression(:user_signup, :week)
 client.query_impression(:user_signup, :year, time: Time.new(Time.now.year - 1))
 ```
 
+You can also query for multiple event/time combinations at once:
+
+```ruby
+query = [
+  [:day],
+  [:day, Time.now - (24 * 60 * 60)], # yesterday
+  [:year, Time.new(Time.now.year - 1)], # last year
+]
+client.query_impression(:user_signup, query) # => [3, 5, 107]
+```
+
 ### Uniqe events
 
 E.g. unique page impression given a user. These do not add up but only count once for each user during any resolution.

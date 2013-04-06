@@ -54,9 +54,18 @@ module Tracking
       run_action(action, options)
     end
 
-    def query_impression(event, resolution, options = {})
-      time = options[:time] || Time.now
-      redis.get(Impression.new(event, time).key_for(resolution)).to_i
+    def query_impression(event, resolutions, options = {})
+      now = Time.now
+      if resolutions.kind_of?(Array)
+        keys = resolutions.map do |resolution, options|
+          time = (options || {})[:time] || now
+          Impression.new(event, time).key_for(resolution)
+        end
+        redis.mget(keys).map(&:to_i)
+      else
+        time = options[:time] || now
+        redis.get(Impression.new(event, time).key_for(resolutions)).to_i
+      end
     end
 
     private

@@ -133,6 +133,33 @@ describe Tracking::Client do
     @client.query_impression(:logout, :year).must_equal 1
   end
 
+  it "can query for impressions of an event during multiple times at once" do
+    @client.track_impression(:login)
+    @client.track_impression(:login, time: ago(1 * day))
+    @client.track_impression(:login, time: ago(3 * day))
+    @client.track_impression(:login, time: ago(1 * week))
+    @client.track_impression(:login, time: ago(2 * month))
+
+    query = [
+      [:day],
+      [:week, time: ago(1 * week)],
+      [:month],
+      [:month, time: ago(2 * month)],
+      [:year],
+      [:year, time: in_the_future(1 * year)]
+    ]
+
+    impressions = @client.query_impression(:login, query)
+    impressions.must_equal [
+      1,
+      2,
+      4,
+      1,
+      5,
+      0
+    ]
+  end
+
   it "can track multiple events" do
     @client.track_unique([:login, :logout], @entity1)
     logins = @client.query_unique(:login, :year)

@@ -1,5 +1,6 @@
 # 0.0.5 / Unreleased
 
+* Adds multi impression querying
 * Refines interface
 * Makes tracking non-blocking by default
 
