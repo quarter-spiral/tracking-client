@@ -122,5 +122,8 @@ describe Tracking::Client do
     @client.query_impression(:login, :day, ago(1 * day)).must_equal 2
     # next week
     @client.query_impression(:login, :week, in_the_future(1 * week)).must_equal 1
+
+    # two years ago
+    @client.query_impression(:login, :week, ago(2 * year)).must_equal 0
   end
 end
