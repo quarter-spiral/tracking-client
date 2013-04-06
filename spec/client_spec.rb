@@ -2,34 +2,6 @@ require_relative './spec_helper'
 
 require 'timecop'
 
-def hour
-  60 * 60
-end
-
-def day
-  hour * 24
-end
-
-def week
-  day * 7
-end
-
-def month
-  day * 30
-end
-
-def year
-  day * 365
-end
-
-def ago(time)
-  Time.now - time
-end
-
-def in_the_future(time)
-  Time.now + time
-end
-
 describe Tracking::Client do
   before do
     @client = Tracking::Client.new('redis://localhost:6379/', blocking: true)
@@ -131,6 +103,14 @@ describe Tracking::Client do
     @client.track_impression([:login, :logout])
     @client.query_impression(:login, :year).must_equal 1
     @client.query_impression(:logout, :year).must_equal 1
+  end
+
+  it "can track total impressions" do
+    @client.track_impression(:login, time: ago(3 * year))
+    @client.track_impression(:login)
+    @client.track_impression(:login, time: in_the_future(52 * year))
+
+    @client.query_impression(:login, :total).must_equal 3
   end
 
   it "can query for impressions of an event during multiple times at once" do

@@ -21,6 +21,10 @@ module Tracking
         send("time_key_for_#{resolution}")
       end
 
+      def time_key_for_total
+        "total"
+      end
+
       def time_key_for_year
         "#{@time.year}"
       end

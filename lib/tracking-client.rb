@@ -7,15 +7,19 @@ require "tracking-client/error"
 require "tracking-client/uuid_helpers"
 require "tracking-client/query_result"
 require "tracking-client/impression"
+require "tracking-client/game"
 
 module Tracking
   class Client
-    SUPPORTED_RESOLUTIONS = %w{year month week day hour}
+    SUPPORTED_RESOLUTIONS = %w{total year month week day hour}
     TRACKING_KEY_PREFIX = "qs_tracking_"
+
+    attr_reader :game
 
     def initialize(redis_url, options = {})
       @minuteman = Minuteman.new(redis: {url: redis_url, driver: :hiredis}, silent: suppress_errors?, time_spans: SUPPORTED_RESOLUTIONS)
       @options = options
+      @game = Game.new(self)
     end
 
     def track_unique(events, uuids, options = {})

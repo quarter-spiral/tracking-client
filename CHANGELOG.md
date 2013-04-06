@@ -1,3 +1,7 @@
+# 0.0.6 / Unreleased
+
+* Adds game specific tracking and insights
+
 # 0.0.5 / 2013-04-06
 
 * Adds multi impression querying

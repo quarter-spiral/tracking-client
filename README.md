@@ -102,3 +102,73 @@ client.query_unique(:user_signup, :month, time: Time.now)
 last_year = Time.new(Time.now.year - 1)
 client.query_unique(:user_signup, :year, time: last_year)
 ```
+
+### Game specific tracking
+
+#### Track an anonymous player
+
+```ruby
+client.game.track_player(game_uuid, "spiral-galaxy")
+
+# Track at a specific point in time
+last_year = Time.new(Time.now.year - 1)
+client.game.track_player(game_uuid, "spiral-galaxy", time: last_year)
+```
+
+#### Track a logged in player
+
+```ruby
+client.game.track_logged_in_player(game_uuid, "spiral-galaxy")
+
+# Track at a specific point in time
+last_year = Time.new(Time.now.year - 1)
+client.game.track_logged_in_player(game_uuid, "spiral-galaxy", time: last_year)
+```
+
+#### Retrieve insights on a game
+
+```ruby
+client.game.insights(game_uuid)
+
+# get them for a specific point in time
+last_year = Time.new(Time.now.year - 1)
+client.game.insights(game_uuid, time: last_year)
+```
+
+The ``#insights`` method returns a hash with a block for each venue and one for overall numbers. Each of those blocks have two keys, ``:anonymous`` (for numbers on not logged in players) and ``:logged_in`` (for numbers of logged in players). That could look like this:
+
+```ruby
+{
+  overall: {
+    anonymous: {
+      …
+    },
+    logged_in: {
+      …
+    }
+  },
+  facebook: {
+    anonymous: {
+      …
+    },
+    logged_in: {
+      …
+    }
+  }
+}
+```
+
+Each of the inner blocks now looks like this:
+
+```ruby
+{
+  total: 13245,
+  today: 45,
+  week: 301,
+  month: 720,
+  year: 6329,
+  rolling_30_days: [76,13,46,23,24,23,63,…]
+}
+```
+
+with data on the total impressions, the impressions today so far, during the current week, the current month and the current year. In addition to that it gives you the impressions over the last 30 days day by day. The first element in that array is the number of impressions 31 days ago. The last element is the number of impressions yesterday.
