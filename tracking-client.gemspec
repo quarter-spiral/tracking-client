@@ -20,4 +20,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'uuidtools', '~> 2.1.3'
   gem.add_dependency 'uuid', '~> 2.3.7'
   gem.add_dependency 'minuteman', '~> 1.0.2'
+  gem.add_dependency 'hiredis', "~> 0.4.5"
 end
