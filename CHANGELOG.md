@@ -1,4 +1,4 @@
-# 0.0.4 / Unreleased
+# 0.0.4 / 2013-04-05
 
 * Adds support to track multiple events/impressions at once
 
