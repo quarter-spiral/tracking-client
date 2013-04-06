@@ -1,3 +1,8 @@
+# 0.0.5 / Unreleased
+
+* Refines interface
+* Makes tracking non-blocking by default
+
 # 0.0.4 / 2013-04-05
 
 * Adds support to track multiple events/impressions at once
