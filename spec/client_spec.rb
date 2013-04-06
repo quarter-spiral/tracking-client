@@ -126,4 +126,21 @@ describe Tracking::Client do
     # two years ago
     @client.query_impression(:login, :week, ago(2 * year)).must_equal 0
   end
+
+  it "can track multiple impressions" do
+    @client.track_impression([:login, :logout])
+    @client.query_impression(:login, :year).must_equal 1
+    @client.query_impression(:logout, :year).must_equal 1
+  end
+
+  it "can track multiple events" do
+    @client.track_unique([:login, :logout], @entity1)
+    logins = @client.query_unique(:login, :year)
+    logins.length.must_equal 1
+    logins.include_uuid?(@entity1).must_equal true
+
+    logouts = @client.query_unique(:logout, :year)
+    logouts.length.must_equal 1
+    logouts.include_uuid?(@entity1).must_equal true
+  end
 end

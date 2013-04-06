@@ -17,8 +17,10 @@ module Tracking
       @minuteman = Minuteman.new(redis: {url: redis_url, driver: :hiredis}, silent: suppress_errors?, time_spans: SUPPORTED_RESOLUTIONS)
     end
 
-    def track_unique(event, uuid, time = Time.now)
-      @minuteman.track(event.to_s, UUIDHelpers.uuid_to_int(uuid), time)
+    def track_unique(events, uuid, time = Time.now)
+      Array(events).map do |event|
+        Thread.new {@minuteman.track(event.to_s, UUIDHelpers.uuid_to_int(uuid), time)}
+      end.each(&:join)
     end
 
     def query_unique(event, resolution, time = Time.now)
@@ -28,10 +30,14 @@ module Tracking
       QueryResult.new(result)
     end
 
-    def track_impression(event, time = Time.now)
-      Impression.new(event, time).keys.map do |key|
-        Thread.new {redis.incr key}
-      end.each {|t| t.join}
+    def track_impression(events, time = Time.now)
+      Array(events).map do |event|
+        Thread.new do
+          Impression.new(event, time).keys.map do |key|
+            Thread.new {redis.incr key}
+          end.each(&:join)
+        end
+      end.each(&:join)
     end
 
     def query_impression(event, resolution, time = Time.now)
